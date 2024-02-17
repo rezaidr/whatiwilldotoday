@@ -11,8 +11,18 @@
 
     <!-- main style -->
     <style>
+      body {
+        height: 100vh;
+        padding: 0 1rem;
+      }
+
       a {
         text-decoration: none;
+      }
+
+      #question {
+        font-weight: bold;
+        font-size: 1.5rem;
       }
 
       #result {
@@ -40,6 +50,20 @@
       #download {
         display: none;
       }
+
+      .section-generate {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+      }
+
+      #generate {
+        position: absolute;
+        bottom: 1rem;
+        right: 5%;
+        left: 5%;
+        text-align: center;
+      }
     </style>
   </head>
   <body>
@@ -55,13 +79,15 @@
       </ons-toolbar>
 
       <div id="result">
+        <div id="question">What Would You Do Today?</div>
         <h1 id="activity"></h1>
         <p id="type"></p>
       </div>
-
-      <ons-fab id="generate" position="bottom right" style="cursor: pointer" onclick="generateQuotes()">
-        <ons-icon icon="md-plus"></ons-icon>
-      </ons-fab>
+      <section class="section-generate">
+        <ons-button id="generate" style="cursor: pointer" onclick="generateQuotes()">
+          <ons-icon icon="md-plus"> Generate Quotes</ons-icon>
+        </ons-button>
+      </section>
     </ons-page>
 
     <script>
@@ -70,12 +96,14 @@
 
       async function generateQuotes() {
         const result = document.getElementById("result");
+        const question = document.getElementById("question");
         const activity = document.getElementById("activity");
         const type = document.getElementById("type");
         const screenshoot = document.getElementById("screenshoot");
         const download = document.getElementById("download");
 
         download.style.display = "none";
+        question.style.display = "none";
 
         const urlBoredApi = "https://www.boredapi.com/api/activity";
         const response = await fetch(urlBoredApi);
