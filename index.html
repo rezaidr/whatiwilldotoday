@@ -1,0 +1,127 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>What I Will Do Today</title>
+    <!-- onsen ui -->
+    <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsenui.css" />
+    <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsen-css-components.min.css" />
+    <script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+    <!-- main style -->
+    <style>
+      a {
+        text-decoration: none;
+      }
+
+      #result {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 90vh;
+      }
+
+      #activity {
+        text-align: center;
+        font-weight: bold;
+      }
+
+      #type {
+        background-color: brown;
+        padding: 1rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: white;
+        display: none;
+      }
+
+      #download {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <ons-page>
+      <ons-toolbar>
+        <div class="center">What I Will Do Today?</div>
+        <div class="right">
+          <ons-toolbar-button style="cursor: pointer">
+            <a id="screenshoot"><ons-icon icon="md-camera"> capture</ons-icon></a>
+            <a download id="download"><ons-icon>download</ons-icon></a>
+          </ons-toolbar-button>
+        </div>
+      </ons-toolbar>
+
+      <div id="result">
+        <h1 id="activity"></h1>
+        <p id="type"></p>
+      </div>
+
+      <ons-fab id="generate" position="bottom right" style="cursor: pointer" onclick="generateQuotes()">
+        <ons-icon icon="md-plus"></ons-icon>
+      </ons-fab>
+    </ons-page>
+
+    <script>
+      let generateQuotesAlert = false;
+      let isScreenshootTaken = false;
+
+      async function generateQuotes() {
+        const result = document.getElementById("result");
+        const activity = document.getElementById("activity");
+        const type = document.getElementById("type");
+        const screenshoot = document.getElementById("screenshoot");
+        const download = document.getElementById("download");
+
+        download.style.display = "none";
+
+        const urlBoredApi = "https://www.boredapi.com/api/activity";
+        const response = await fetch(urlBoredApi);
+        const api = await response.json();
+
+        activity.textContent = api.activity;
+        type.textContent = api.type;
+        type.style.display = "block";
+
+        isScreenshootTaken = false;
+        generateQuotesAlert = true;
+
+        if (!isScreenshootTaken) {
+          screenshoot.style.display = "inherit";
+        }
+      }
+
+      // jika generate Quote belum diklik
+      const screenshootButton = document.getElementById("screenshoot");
+      screenshootButton.addEventListener("click", () => {
+        if (!generateQuotesAlert) {
+          alert("Please run generateQuotes first!");
+        } else if (generateQuotesAlert) {
+          screenshoot.style.display = "none";
+          html2canvas(result).then((callback) => {
+            download.setAttribute("href", callback.toDataURL("image/png"));
+            download.style.display = "inline-block";
+            isScreenshootTaken = true;
+            if (isScreenshootTaken) {
+              alert("Quotes has been screenshooted");
+            }
+          });
+          // download.addEventListener("click", () => {
+          //   window.location.reload();
+          // });
+        }
+      });
+
+      // const generateButton = document.getElementById("generate");
+      // generateButton.addEventListener("click", () => {
+      //   // Reset status screenshoot dan tampilkan tombol screenshoot jika screenshoot belum diambil
+      //   if (isScreenshootTaken) {
+      //     window.location.reload();
+      //     return;
+      //   }
+      // });
+    </script>
+  </body>
+</html>
